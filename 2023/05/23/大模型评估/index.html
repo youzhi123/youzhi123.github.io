@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>大模型评估 | Hexo</title><meta name="author" content="youzhi123"><meta name="copyright" content="youzhi123"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="计划 GPT系列模型在基准数据集CLUE和GLUE上的评测   CLUE和GLUE各种任务的提示构造 以GPT2(openai)、BERT系列直接出句子的encoder与label进行分类，为基础模型实现大模型评估代码的开发  规定提示、文本、选项、答案  AGIEval基准评测   ChatGLM（清华） Moss（复旦） ChatGPT（需要api账号） minimax   MMCU基准  如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型评估">
+<meta property="og:url" content="https://youzhi123.github.io/2023/05/23/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="计划 GPT系列模型在基准数据集CLUE和GLUE上的评测   CLUE和GLUE各种任务的提示构造 以GPT2(openai)、BERT系列直接出句子的encoder与label进行分类，为基础模型实现大模型评估代码的开发  规定提示、文本、选项、答案  AGIEval基准评测   ChatGLM（清华） Moss（复旦） ChatGPT（需要api账号） minimax   MMCU基准  如">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-05-23T00:59:07.000Z">
+<meta property="article:modified_time" content="2023-05-26T07:39:22.161Z">
+<meta property="article:author" content="youzhi123">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://youzhi123.github.io/2023/05/23/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '大模型评估',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-26 15:39:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr class="custom-hr"/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Hexo"><span class="site-name">Hexo</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">大模型评估</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-05-23T00:59:07.000Z" title="Created 2023-05-23 08:59:07">2023-05-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-05-26T07:39:22.161Z" title="Updated 2023-05-26 15:39:22">2023-05-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="大模型评估"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="计划"><a href="#计划" class="headerlink" title="计划"></a>计划</h1><ol>
+<li>GPT系列模型在基准数据集CLUE和GLUE上的评测</li>
+</ol>
+<ul>
+<li>CLUE和GLUE各种任务的提示构造</li>
+<li>以GPT2(openai)、BERT系列直接出句子的encoder与label进行分类，为基础模型实现大模型评估代码的开发</li>
+</ul>
+<p>规定提示、文本、选项、答案</p>
+<ol start="2">
+<li>AGIEval基准评测</li>
+</ol>
+<ul>
+<li>ChatGLM（清华）</li>
+<li>Moss（复旦）</li>
+<li>ChatGPT（需要api账号）</li>
+<li>minimax</li>
+</ul>
+<ol start="3">
+<li>MMCU基准</li>
+</ol>
+<h2 id="如何评估大模型"><a href="#如何评估大模型" class="headerlink" title="如何评估大模型"></a>如何评估大模型</h2><ol>
+<li>在广泛的 NLP 任务上进行评估；</li>
+<li>在高级的 LLM 能力上进行评估，比如算术题、写代码、推理等。</li>
+</ol>
+<h3 id="评估方式"><a href="#评估方式" class="headerlink" title="评估方式"></a>评估方式</h3><p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/627812067">https://zhuanlan.zhihu.com/p/627812067</a></p>
+<p>由于大模型参数规模较大，不同的评估方式会涉及到硬件要求（GPU）、显存大小、所需时间以及评估所使用的数据集规模等问题。</p>
+<h4 id="1-fine-tune"><a href="#1-fine-tune" class="headerlink" title="1. fine-tune"></a>1. fine-tune</h4><p>在预训练模型基础上进行全参数微调，以适应下游任务。需要模型全参数训练，因此需要有训练集和测试集，且对训练集规模有要求。</p>
+<h4 id="2-prompt"><a href="#2-prompt" class="headerlink" title="2. prompt"></a>2. prompt</h4><p>通过添加提示来指导模型生成我们想要的答案，在不同的数据场景中提示的构造方式有：</p>
+<h5 id="2-1-few-shot"><a href="#2-1-few-shot" class="headerlink" title="2.1 few-shot"></a>2.1 few-shot</h5><p>只训练提示向量，冻结大模型参数，如p-tuning v2、lora等方法，由于训练的参数少，少样本的训练集即可。</p>
+<h5 id="2-2-zero-shot"><a href="#2-2-zero-shot" class="headerlink" title="2.2 zero-shot"></a>2.2 zero-shot</h5><p>直接将问题和提示文本输入给模型，让他输出答案，但一般都是将答案作为选项一起作为输入，让模型将正确答案选出来。</p>
+<h4 id="3-In-context-Learning-ICL"><a href="#3-In-context-Learning-ICL" class="headerlink" title="3. In-context Learning (ICL)"></a>3. In-context Learning (ICL)</h4><p>上下文学习。不需要训练任何参数，只要给输入添加几个问题和答案作为示例给大模型，让大模型知道后面的问题要以什么样的形式进行回答。</p>
+<h4 id="4-Chain-of-Thought-CoT"><a href="#4-Chain-of-Thought-CoT" class="headerlink" title="4. Chain of Thought (CoT)"></a>4. Chain of Thought (CoT)</h4><p>思维链，一步一步去推导出答案。还未开始调研。。。</p>
+<h3 id="评估数据集"><a href="#评估数据集" class="headerlink" title="评估数据集"></a>评估数据集</h3><h4 id="英文评测基准"><a href="#英文评测基准" class="headerlink" title="英文评测基准"></a>英文评测基准</h4><h5 id="1-GLUE"><a href="#1-GLUE" class="headerlink" title="1. GLUE"></a>1. GLUE</h5><p>dataset：<a target="_blank" rel="noopener" href="https://gluebenchmark.com/">https://gluebenchmark.com/</a><br>paper：<a target="_blank" rel="noopener" href="https://openreview.net/pdf?id=rJ4km2R5t7">https://openreview.net/pdf?id=rJ4km2R5t7</a><br>code：<a target="_blank" rel="noopener" href="https://github.com/nyu-mll/GLUE-baselines">https://github.com/nyu-mll/GLUE-baselines</a><br>Leaderboard：<a target="_blank" rel="noopener" href="https://gluebenchmark.com/leaderboard">https://gluebenchmark.com/leaderboard</a></p>
+<p>纽约大学、华盛顿大学等机构创建了一个多任务的自然语言理解基准，主要是NLU任务（9个），包括单句分类和句子对分类。数据形式简单，不具体介绍每一个数据集了。</p>
+<h5 id="2-SuperGLUE"><a href="#2-SuperGLUE" class="headerlink" title="2. SuperGLUE"></a>2. SuperGLUE</h5><p>参考链接1：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/64114978">https://zhuanlan.zhihu.com/p/64114978</a><br>参考链接2：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/623534998">https://zhuanlan.zhihu.com/p/623534998</a><br>dataset：<a target="_blank" rel="noopener" href="https://super.gluebenchmark.com/">https://super.gluebenchmark.com/</a><br>paper：<a target="_blank" rel="noopener" href="https://w4ngatang.github.io/static/papers/superglue.pdf">https://w4ngatang.github.io/static/papers/superglue.pdf</a><br>code：<a target="_blank" rel="noopener" href="https://github.com/nyu-mll/jiant">https://github.com/nyu-mll/jiant</a><br>Leaderboard：<a target="_blank" rel="noopener" href="https://super.gluebenchmark.com/leaderboard">https://super.gluebenchmark.com/leaderboard</a></p>
+<p>2018年Bert的出现，在三个 GLUE 任务（QNLI、 MRPC 和 QQP）上，最佳的模型已经超过了人类基准，为此纽约大学、Facebook 人工智能研究所、华盛顿大学和剑桥大学的多名研究者联合整理发布了SuperGLUE。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251039911.webp" alt="img"></p>
+<p>SuperGLUE同样是NLU任务（7个），其中保留了两项 GLUE 任务，另外又加入了五个难度更大的新任务。数据形式具体介绍如下：</p>
+<h6 id="1-CB"><a href="#1-CB" class="headerlink" title="1. CB"></a>1. CB</h6><p>三类的文本蕴含任务，每个样本都包含一个前提（premise）和对应的假设（hypothesis）。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251045781.webp" alt="img"></p>
+<h6 id="2-COPA"><a href="#2-COPA" class="headerlink" title="2. COPA"></a>2. COPA</h6><p>因果推理任务，每个样本包括一个前提句子和两个可能（原因或结果）的可选项。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251047288.webp" alt="img"></p>
+<h6 id="3-ReCoRD"><a href="#3-ReCoRD" class="headerlink" title="3. ReCoRD"></a>3. ReCoRD</h6><p>阅读理解任务，给定一个段落和一组问题，要求从段落中标记出能够回答问题的部分。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251133833.png" alt="image-20230525113325820"></p>
+<h6 id="4-MultiRC"><a href="#4-MultiRC" class="headerlink" title="4. MultiRC"></a>4. MultiRC</h6><p>多项选择任务，每个样本都包含一个上下文段落、一个有关该段落的问题和一个该问题的可能答案的列表。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251117617.webp" alt="img"></p>
+<h6 id="5-RTE"><a href="#5-RTE" class="headerlink" title="5. RTE"></a>5. RTE</h6><p>文本蕴涵任务，预测给定的前提句子是否蕴涵给定的假设句子，也称为自然语言推理任务。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251119670.webp" alt="img"></p>
+<h6 id="6-WiC"><a href="#6-WiC" class="headerlink" title="6. WiC"></a>6. WiC</h6><p>词义消岐任务，该任务被设定成了在句子对上的二元分类问题。给定两个句子和一个出现在这两个句子中的多义词（歧义词），任务目标是决定该词在这两个句子中是否含义相同。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251120883.webp" alt="img"></p>
+<h6 id="7-WSC"><a href="#7-WSC" class="headerlink" title="7. WSC"></a>7. WSC</h6><p>阅读理解任务，每个样本包括一个带有一个代词的句子，并从一个选项列表中选择该代词所代指的目标，被设定成了二元分类问题。</p>
+<p><img src="https://raw.githubusercontent.com/youzhi123/figure_bed/main/imgs/202305251123554.webp" alt="img"></p>
+<h5 id="3-others"><a href="#3-others" class="headerlink" title="3. others"></a>3. others</h5><ol>
+<li>MMLU基准（Hendrycks等人，2021a）提供了从真实世界的考试和书籍中收集的多领域和多任务评价。</li>
+<li>BIG-bench基准（Srivastava等人，2022年）包括204个不同的任务，其中一些任务被认为超出了当前LLM的能力。</li>
+</ol>
+<ul>
+<li>HELM基准（Liang等人，2022年）汇总了42个不同的任务，用从准确性到鲁棒性的7个指标来评估LLMs。</li>
+</ul>
+<h2 id="大模型及评估结果"><a href="#大模型及评估结果" class="headerlink" title="大模型及评估结果"></a>大模型及评估结果</h2><h3 id="中文大模型"><a href="#中文大模型" class="headerlink" title="中文大模型"></a>中文大模型</h3><h4 id="1-ChatGLM-6B"><a href="#1-ChatGLM-6B" class="headerlink" title="1. ChatGLM-6B"></a>1. ChatGLM-6B</h4><p>参考链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/630134021">https://zhuanlan.zhihu.com/p/630134021</a><br>模型文件：<a target="_blank" rel="noopener" href="https://huggingface.co/THUDM/chatglm-6b">https://huggingface.co/THUDM/chatglm-6b</a><br>code：<a target="_blank" rel="noopener" href="https://github.com/THUDM/ChatGLM-6B">https://github.com/THUDM/ChatGLM-6B</a><br>blog：<a target="_blank" rel="noopener" href="https://chatglm.cn/blog">https://chatglm.cn/blog</a><br>paper：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.10360.pdf">https://arxiv.org/pdf/2103.10360.pdf</a></p>
+<p>ChatGLM-6B 出自清华，是一个开源的、支持中英双语的对话语言模型，基于 GLM 架构，具有 62 亿参数。ChatGLM-6B 使用了和 ChatGPT 相似的技术，针对中文问答和对话进行了优化。使用约 1T 标识符的中英双语训练，辅以监督微调、反馈自助、人类反馈强化学习等技术的加持。</p>
+<p>为了方便开发者针对自己的下游场景定制模型，其开源项目中提供了基于 P-Tuning v2 的高效参数微调代码，INT4 量化级别下最低需要 7GB 显存即可启动微调。</p>
+<p>在另一个大模型能力评估项目 <a target="_blank" rel="noopener" href="https://github.com/SJTU-LIT/ceval">C-Eval</a> 中，其提供了ChatGLM-6B 的 In-context Learning 方式的评估代码，我们后面对 ChatGLM-6B 的评估基于此,<a target="_blank" rel="noopener" href="https://www.cluebenchmarks.com/">FewCLUE</a> 。</p>
+<h4 id="2-MOSS"><a href="#2-MOSS" class="headerlink" title="2. MOSS"></a>2. MOSS</h4><h4 id="3-GPT2-Chinese"><a href="#3-GPT2-Chinese" class="headerlink" title="3. GPT2-Chinese"></a>3. GPT2-Chinese</h4><h3 id="英文大模型"><a href="#英文大模型" class="headerlink" title="英文大模型"></a>英文大模型</h3><h3 id="公开的评估结果"><a href="#公开的评估结果" class="headerlink" title="公开的评估结果"></a>公开的评估结果</h3><h3 id="我们的评估结果"><a href="#我们的评估结果" class="headerlink" title="我们的评估结果"></a>我们的评估结果</h3><p><a target="_blank" rel="noopener" href="https://github.com/SJTU-LIT/ceval">https://github.com/SJTU-LIT/ceval</a></p>
+<p>SuperCLUE的评测任务究竟范围如何，到现在为止也没有公布出来</p>
+<h3 id="中文评测基准："><a href="#中文评测基准：" class="headerlink" title="中文评测基准："></a>中文评测基准：</h3><ul>
+<li>CLUE基准（Xu等人，2020）是第一个大规模的中文NLU基准，现在仍然是使用最广泛的中文基准。</li>
+<li>CUGE</li>
+<li>AGIEval基准（Zhong等人，2023）包含了来自中国高考、中国律师资格考试和中国公务员考试的数据。</li>
+<li>MMCU基准（Zeng，2023）包括来自医学、法律、心理学和教育等四大领域的测试，这些数据也是从中国高考、资格考试以及大学考试中收集的。</li>
+</ul>
+<h2 id="1-GLUE-1"><a href="#1-GLUE-1" class="headerlink" title="1. GLUE"></a>1. GLUE</h2><h2 id="2-MMLU"><a href="#2-MMLU" class="headerlink" title="2. MMLU"></a>2. MMLU</h2><h2 id="3-BIG-bench"><a href="#3-BIG-bench" class="headerlink" title="3. BIG-bench"></a>3. BIG-bench</h2><h2 id="4-HELM"><a href="#4-HELM" class="headerlink" title="4. HELM"></a>4. HELM</h2><h1 id="中文评测基准"><a href="#中文评测基准" class="headerlink" title="中文评测基准"></a>中文评测基准</h1><h2 id="CLUE"><a href="#CLUE" class="headerlink" title="CLUE"></a>CLUE</h2><p>github: <a target="_blank" rel="noopener" href="https://github.com/CLUEbenchmark/SuperCLUE">https://github.com/CLUEbenchmark/SuperCLUE</a></p>
+<h2 id="AGIEval"><a href="#AGIEval" class="headerlink" title="AGIEval"></a>AGIEval</h2><p>github: <a target="_blank" rel="noopener" href="https://github.com/SJTU-LIT/ceval">https://github.com/SJTU-LIT/ceval</a><br>官网: <a target="_blank" rel="noopener" href="https://cevalbenchmark.com/">https://cevalbenchmark.com/</a></p>
+<h2 id="MMCU"><a href="#MMCU" class="headerlink" title="MMCU"></a>MMCU</h2><p>github: <a target="_blank" rel="noopener" href="https://github.com/Felixgithub2017/MMCU">https://github.com/Felixgithub2017/MMCU</a></p>
+<table>
+<thead>
+<tr>
+<th align="center">Corpus</th>
+<th align="center">example</th>
+<th align="center">description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CB</td>
+<td align="center">8.5k</td>
+<td align="center">1k</td>
+</tr>
+<tr>
+<td align="center">SST-2</td>
+<td align="center">67k</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://youzhi123.github.io">youzhi123</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://youzhi123.github.io/2023/05/23/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/">https://youzhi123.github.io/2023/05/23/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/05/24/GPT-2/" title="GPT-2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">GPT-2</div></div></a></div><div class="next-post pull-right"><a href="/2023/05/22/GLUE%E5%9F%BA%E5%87%86%E6%95%B0%E6%8D%AE%E9%9B%86/" title="GLUE基准数据集"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">GLUE基准数据集</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">youzhi123</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%A1%E5%88%92"><span class="toc-number">1.</span> <span class="toc-text">计划</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%AF%84%E4%BC%B0%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">如何评估大模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">评估方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-fine-tune"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">1. fine-tune</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-prompt"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">2. prompt</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-1-few-shot"><span class="toc-number">1.1.1.2.1.</span> <span class="toc-text">2.1 few-shot</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-zero-shot"><span class="toc-number">1.1.1.2.2.</span> <span class="toc-text">2.2 zero-shot</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-In-context-Learning-ICL"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">3. In-context Learning (ICL)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-Chain-of-Thought-CoT"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">4. Chain of Thought (CoT)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">评估数据集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%8B%B1%E6%96%87%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">英文评测基准</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-GLUE"><span class="toc-number">1.1.2.1.1.</span> <span class="toc-text">1. GLUE</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-SuperGLUE"><span class="toc-number">1.1.2.1.2.</span> <span class="toc-text">2. SuperGLUE</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-CB"><span class="toc-number">1.1.2.1.2.1.</span> <span class="toc-text">1. CB</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-COPA"><span class="toc-number">1.1.2.1.2.2.</span> <span class="toc-text">2. COPA</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-ReCoRD"><span class="toc-number">1.1.2.1.2.3.</span> <span class="toc-text">3. ReCoRD</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-MultiRC"><span class="toc-number">1.1.2.1.2.4.</span> <span class="toc-text">4. MultiRC</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#5-RTE"><span class="toc-number">1.1.2.1.2.5.</span> <span class="toc-text">5. RTE</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#6-WiC"><span class="toc-number">1.1.2.1.2.6.</span> <span class="toc-text">6. WiC</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#7-WSC"><span class="toc-number">1.1.2.1.2.7.</span> <span class="toc-text">7. WSC</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-others"><span class="toc-number">1.1.2.1.3.</span> <span class="toc-text">3. others</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%8A%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.</span> <span class="toc-text">大模型及评估结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E6%96%87%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">中文大模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-ChatGLM-6B"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">1. ChatGLM-6B</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-MOSS"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2. MOSS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-GPT2-Chinese"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">3. GPT2-Chinese</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8B%B1%E6%96%87%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">英文大模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AC%E5%BC%80%E7%9A%84%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.3.</span> <span class="toc-text">公开的评估结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%91%E4%BB%AC%E7%9A%84%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.4.</span> <span class="toc-text">我们的评估结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E6%96%87%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86%EF%BC%9A"><span class="toc-number">1.2.5.</span> <span class="toc-text">中文评测基准：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-GLUE-1"><span class="toc-number">1.3.</span> <span class="toc-text">1. GLUE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-MMLU"><span class="toc-number">1.4.</span> <span class="toc-text">2. MMLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-BIG-bench"><span class="toc-number">1.5.</span> <span class="toc-text">3. BIG-bench</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-HELM"><span class="toc-number">1.6.</span> <span class="toc-text">4. HELM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E6%96%87%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86"><span class="toc-number">2.</span> <span class="toc-text">中文评测基准</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CLUE"><span class="toc-number">2.1.</span> <span class="toc-text">CLUE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AGIEval"><span class="toc-number">2.2.</span> <span class="toc-text">AGIEval</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MMCU"><span class="toc-number">2.3.</span> <span class="toc-text">MMCU</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/04/Hexo%E6%8C%87%E5%8D%97/" title="Hexo指南">Hexo指南</a><time datetime="2023-08-04T08:05:31.000Z" title="Created 2023-08-04 16:05:31">2023-08-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/04/Overleaf%E6%8C%87%E5%8D%97/" title="Overleaf指南">Overleaf指南</a><time datetime="2023-08-04T06:50:18.000Z" title="Created 2023-08-04 14:50:18">2023-08-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/03/%E5%A4%9A%E6%9C%BA%E5%A4%9A%E5%8D%A1%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/" title="多机多卡分布式训练">多机多卡分布式训练</a><time datetime="2023-08-03T02:49:08.000Z" title="Created 2023-08-03 10:49:08">2023-08-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/11/NLP-tricks/" title="NLP-tricks">NLP-tricks</a><time datetime="2023-07-11T06:33:55.000Z" title="Created 2023-07-11 14:33:55">2023-07-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/11/Prompt/" title="Prompt">Prompt</a><time datetime="2023-07-11T05:54:31.000Z" title="Created 2023-07-11 13:54:31">2023-07-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By youzhi123</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
